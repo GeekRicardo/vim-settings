@@ -362,11 +362,25 @@ let g:ycm_complete_in_strings = 1
 "注释和字符串中的文字也会被收入补全
 let g:ycm_collect_identifiers_from_comments_and_strings = 0
 
-nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> " 跳转到定义处
+"nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> "跳转到定义处
+let Tlist_Ctags_Cmd="/usr/bin/ctags"
+let Tlist_Show_One_File = 1
+let Tlist_WinWidth=40
+let Tlist_Aotu_Open = 1
+let Tlist_exit_OnlyWindow = 1
+let Tlist_Use_Right_Window = 1
+noremap <F6> :!ctags -R<CR>
 
 
 " tagbar插件
 nmap <leader>tb :TagbarToggle<CR>
+"nmap <Leader>tb :TagbarToggle<CR>      "快捷键设置
+let g:tagbar_ctags_bin='ctags'          "ctags程序的路径
+let g:tagbar_width=30                   "窗口宽度的设置
+map <F3> :Tagbar<CR>
+autocmd BufReadPost *.py,*.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()  "如果是c语言的程序的话，tagbar自动开启
+
+
 
 
 "YCM Still no compile flags, no completions yet.解决
