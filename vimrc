@@ -78,7 +78,7 @@ set cmdheight=1 "设定命令行的行数为1
 set laststatus=2 "显示状态栏(默认值为1，无法显示状态栏，为2时显示状态栏)
 set ruler "标尺信息，显示当前光标的坐标，这一步 需要设置 ”显示状态栏“，才能看到效果
 
-set statusline=%F%m%r\ ASCII=\%b,HEX=\%B,%l,%c%V\ %L-%p%%
+"set statusline=%F%m%r\ ASCII=\%b,HEX=\%B,%l,%c%V\ %L-%p%%
 "设置在状态行显示的信息如下：
 "   %F              当前文件名
 "   %m              当前文件修改状态
@@ -94,11 +94,11 @@ set statusline=%F%m%r\ ASCII=\%b,HEX=\%B,%l,%c%V\ %L-%p%%
 "   %%              百分号
 "   %L              当前文件总行数
 
-au BufNewFile,BufRead *.py
-            \set tabstop=4
-            \set softtabstop=4
-            \set shiftwidth=4
-            \set textwidth=79
+"au BufNewFil"e,BufRead *.py
+            "\set tabstop=4
+            "\set softtabstop=4
+            "\set shiftwidth=4
+            "\set textwidth=79
 
 "获取当前文件名
 function GetFileName()
@@ -201,7 +201,7 @@ set helplang=cn  "语言设置”
 set ruler "在编辑过程中，在右下角显示光标位置的状态行“
 
 set laststatus=2 " 显示状态栏 (默认值为 1, 无法显示状态栏)
-set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ %{&encoding}\ %c:%l/%L%)\
+set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ {&encoding}\ %c:%l/%L%)\
 " 设置在状态行显示的信息
 
 set showcmd "在状态行显示目前所执行的命令，未完成的指令片段也会显示出来"
@@ -253,22 +253,22 @@ Plugin 'skywind3000/asyncrun.vim'
 nnoremap <F5> :call CompileRunGcc()<cr>
 
 func! CompileRunGcc()
-          exec "w"
-          if &filetype == 'python'
-                  if search("@profile")
-                          exec "AsyncRun kernprof -l -v %"
-                          exec "copen"
-                          exec "wincmd p"
-                  elseif search("set_trace()")
-                          exec "!python3 %"
-                  else
-                          exec "AsyncRun -raw python3 %"
-                          exec "copen"
-                          exec "wincmd p"
-                  endif
-          endif
+    exec "w"
+    if &filetype == 'python'
+        if search("@profile")
+            exec "AsyncRun kernprof -l -v %"
+            exec "copen"
+            exec "wincmd p"
+        elseif search("set_trace()")
+            exec "!python3 %"
+        else
+            exec "AsyncRun -raw python3 %"
+            exec "copen"
+            exec "wincmd p"
+        endif
+    endif
 
-      endfunc
+endfunc
 
 
 "系统剪切板
@@ -294,7 +294,7 @@ Plugin 'vim-scripts/indentpython.vim'
 "检查语法/高亮
 "Plugin 'scrooloose/syntastic'
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
@@ -320,10 +320,10 @@ let g:indent_guides_tab_guides = 0            ""添加行，对tab对齐的禁�
 "格式化代码插件
 "Plugin 'Chiel92/vim-autoformat'
 "F3自动格式化代码
-noremap <F3> :Autoformat<CR>
-let g:autoformat_verbosemode=1
+"noremap <F3> :Autoformat<CR>
+"let g:autoformat_verbosemode=1
 "保存时自动格式化代码，针对所有支持的文件
-au BufWrite * :Autoformat
+"au BufWrite * :Autoformat
 
 
 
@@ -378,7 +378,7 @@ nmap <leader>tb :TagbarToggle<CR>
 let g:tagbar_ctags_bin='ctags'          "ctags程序的路径
 let g:tagbar_width=30                   "窗口宽度的设置
 map <F3> :Tagbar<CR>
-autocmd BufReadPost *.py,*.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()  "如果是c语言的程序的话，tagbar自动开启
+"autocmd BufReadPost *.py,*.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()  "如果是c语言的程序的话，tagbar自动开启
 
 
 
@@ -401,4 +401,43 @@ func! CompileRunGcc()
     elseif &filetype == 'sh'
         :!time bash %
     endif
+endfunc
+
+
+" F5编译和运行C程序，C++程序,Python程序，shell程序，F9 gdb调试
+" 请注意，下述代码在windows下使用会报错，需要去掉./这两个字符
+
+" <f5> 编译和运行C
+map <f5> :call CompileRunGcc()<cr>
+func! CompileRunGcc()
+exec "w"
+exec "!gcc % -o %<"
+exec "! ./%<"
+endfunc
+
+"< F5> 编译和运行C++
+map <f5> :call CompileRunGpp()<cr>
+func! CompileRunGpp()
+exec "w"
+exec "!g++ % -o %<"
+exec "! ./%<"
+endfunc
+
+" <f5> 运行python程序
+map <f5> :w<cr>:!python %<cr>
+
+" <f5> 运行shell程序
+map <f5> :call CompileRunSH()<cr>
+func! CompileRunSH()
+exec "w"
+exec "!chmod a+x %"
+exec "!./%"
+endfunc
+
+"<f9>  gdb调试
+map <f9> :call Debug()<cr>
+func!  Debug()
+exec "w"
+exec "!gcc % -o %< -gstabs+"
+exec "!gdb %<"
 endfunc
