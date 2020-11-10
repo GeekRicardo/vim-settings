@@ -36,11 +36,16 @@ endif
 "  filetype plugin indent on
 "endif
 
+" 添加anaconda3的python动态链接库
+set pythonthreedll=/root/anaconda3/lib/libpython3.7m.dylib
+set pythonthreehome=/root/anaconda3
+
+
 " The following are commented out as they cause vim to behave a lot
 " differently from regular Vi. They are highly recommended though.
-"set showcmd        " Show (partial) command in status line.
-"set showmatch      " Show matching brackets.
-"set ignorecase     " Do case insensitive matching
+set showcmd        " Show (partial) command in status line.
+set showmatch      " Show matching brackets.
+set ignorecase     " Do case insensitive matching
 "set smartcase      " Do smart case matching
 "set incsearch      " Incremental search
 "set autowrite      " Automatically save before commands like :next and :make
@@ -201,7 +206,7 @@ set helplang=cn  "语言设置”
 set ruler "在编辑过程中，在右下角显示光标位置的状态行“
 
 set laststatus=2 " 显示状态栏 (默认值为 1, 无法显示状态栏)
-set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ {&encoding}\ %c:%l/%L%)\
+set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{kite#statusline()}\ %{&fileformat}\ {&encoding}\ %c:%l/%L%)\
 " 设置在状态行显示的信息
 
 set showcmd "在状态行显示目前所执行的命令，未完成的指令片段也会显示出来"
@@ -311,6 +316,8 @@ set laststatus=2
 Plugin 'tenfyzhong/CompleteParameter.vim'
 "------------------------------------------------------------------------------------
 "对齐线插件
+" 修改主题,不然会报错 highlight group not found
+colorscheme default 
 Plugin 'nathanaelkane/vim-indent-guides'
 let g:indent_guides_enable_on_vim_startup = 1 ""添加行，vim启动时启用
 let g:indent_guides_start_level = 1           ""添加行，开始显示对齐线的缩进级别
@@ -329,9 +336,9 @@ let g:indent_guides_tab_guides = 0            ""添加行，对tab对齐的禁�
 
 
 "自动补全
-Bundle 'Valloric/YouCompleteMe'
+" Bundle 'Valloric/YouCompleteMe'
 " 自动补全配置
-set completeopt=longest,menu    "让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
+set completeopt=menuone,noinsert    "让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口
 inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"    "回车即选中当前项
 "上下左右键的行为 会显示其他信息
@@ -441,3 +448,10 @@ exec "w"
 exec "!gcc % -o %< -gstabs+"
 exec "!gdb %<"
 endfunc
+
+Plugin 'junegunn/seoul256.vim'
+colo seoul256
+set background=dark
+
+set statusline=%<%f\ %h%m%r%{kite#statusline()}%=%-14.(%l,%c%V%)\ %P
+set laststatus=2
